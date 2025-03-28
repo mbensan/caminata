@@ -5,3 +5,10 @@
   max-height: 8rem;
   height: 8rem;
 }
+.about .content {
+  padding: 3rem 0;
+}
+#img-carab {
+  width: 70%;
+  margin: 0 auto;
+}
