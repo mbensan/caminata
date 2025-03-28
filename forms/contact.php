@@ -1,41 +1,56 @@
 <?php
-  /**
-  * Requires the "PHP Email Form" library
-  * The "PHP Email Form" library is available only in the pro version of the template
-  * The library should be uploaded to: vendor/php-email-form/php-email-form.php
-  * For more info and help: https://bootstrapmade.com/php-email-form/
-  */
+require '../vendor/phpmailer/phpmailer/src/Exception.php';
+require '../vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require '../vendor/phpmailer/phpmailer/src/SMTP.php';
 
-  // Replace contact@example.com with your real receiving email address
-  $receiving_email_address = 'contact@example.com';
+// Include PHPMailer classes
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-  if( file_exists($php_email_form = '../assets/vendor/php-email-form/php-email-form.php' )) {
-    include( $php_email_form );
-  } else {
-    die( 'Unable to load the "PHP Email Form" Library!');
-  }
+// php -S localhost:8000
+$name = $_POST['name'];
+$email = $_POST['email'];
+$age = $_POST['age'];
+$dog_name = $_POST['dog_name'];
+$dog_age = $_POST['dog_age'];
 
-  $contact = new PHP_Email_Form;
-  $contact->ajax = true;
-  
-  $contact->to = $receiving_email_address;
-  $contact->from_name = $_POST['name'];
-  $contact->from_email = $_POST['email'];
-  $contact->subject = $_POST['subject'];
+if (!$name || !$email || !$age) {
+  die('Invalid form');
+}
 
-  // Uncomment below code if you want to use SMTP to send emails. You need to enter your correct SMTP credentials
-  /*
-  $contact->smtp = array(
-    'host' => 'example.com',
-    'username' => 'example',
-    'password' => 'pass',
-    'port' => '587'
-  );
-  */
+$mail = new PHPMailer(true);
 
-  $contact->add_message( $_POST['name'], 'From');
-  $contact->add_message( $_POST['email'], 'Email');
-  $contact->add_message( $_POST['message'], 'Message', 10);
+try {
+    // Server settings
+    $mail->isSMTP();
+    $mail->Host       = 'smtp.gmail.com'; // Replace with your SMTP server
+    $mail->SMTPAuth   = true;
+    $mail->Username   = 'sitiowebravbilbao@gmail.com'; // Your email
+    $mail->Password   = 'bo$%ov44auznytl-n';      // Your email password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Or PHPMailer::ENCRYPTION_SMTPS for SSL
+    $mail->Port       = 587; // Use 465 for SSL, 587 for TLS
 
-  echo $contact->send();
+    // Recipients
+    $mail->setFrom('caminatafamiliar@gmail.com', 'Caminata Familiar');
+    $mail->addAddress('contacto@caminatafamilia.cl'); // Add a recipient
+    $mail->addCC('mbensan.test@gmail.com'); // Add a recipient
+
+    // Content
+    $mail->isHTML(true);
+    $mail->Subject = $subject;
+    $body = '<h2>Inscripción exitosa</h2>';
+    $body .= '<h4>Te esperamos con tu familia y tu amigo de 4 patas</h2>';
+
+    $mail->Body    = $body;
+
+    $mail->AltBody = 'Texto plano de prueba';
+
+    $mail->send();
+    
+    http_response_code(200);
+    echo "OK";
+  } catch (Exception $e) {
+    http_response_code(400);
+    echo "Error en el envío. Por favor contáctenos por otro medio";
+}
 ?>
