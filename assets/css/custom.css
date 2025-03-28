@@ -1,0 +1,7 @@
+.header {
+  padding: 0;
+}
+.header .logo img {
+  max-height: 8rem;
+  height: 8rem;
+}
